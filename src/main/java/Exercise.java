@@ -17,6 +17,7 @@ public class Exercise {
         }
 
         List<Pessoa> pessoaList = new ArrayList<>();
+        List<Pet> petList = new ArrayList<>();
 
         int count = 0;
         while (input.hasNextLine()) {
@@ -39,6 +40,7 @@ public class Exercise {
             } else {
                 pet.setNome(splittedLine[2]);
                 pet.setProprietario(pessoaList.get(count));
+                petList.add(pet);
                 count++;
 
                 System.out.println("### Pet");

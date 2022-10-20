@@ -3,7 +3,7 @@ public class Pessoa {
     private String nome;
     private String endereco;
 
-    public Pessoa(String documento, String nome, String endereco) {
+    public Pessoa(String documento, String nome, String endereco, Pet pet) {
         this.documento = documento;
         this.nome = nome;
         this.endereco = endereco;

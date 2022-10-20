@@ -1,6 +1,2 @@
 1|Pessoa|11111|Celio|Rua Z
-2|Pet|Toto|11111
-3|Pessoa|222222|Melio|Rua X
-4|Pet|Filete|22222
-5|Pessoa|33333|Teló|Rua F
-6|Pet|Toto|33333
+2|Pet|11111|Toto
