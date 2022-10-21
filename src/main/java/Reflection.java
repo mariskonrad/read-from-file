@@ -130,7 +130,7 @@ public class Reflection {
         Object result = null;
         for (Object o : list) {
             if (!o.getClass().equals(Pessoa.class)) {
-                return null;
+                continue;
             } else {
                 Method metodo = null;
                 try {
