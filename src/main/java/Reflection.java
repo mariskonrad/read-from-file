@@ -2,9 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Reflection {
     public static void main(String[] args) {
@@ -41,17 +39,21 @@ public class Reflection {
                         if (splittedLine[1].equals("Pet")) {
                             System.out.println("aqui");
                         }
-                        for (Object object : objectsList)
-                            if (containsDocument(object, splittedLine[count])) {
-                                metodo.invoke(instance, object);
-                            } else break;
+                        Object donoDoPet = encontraDonoDoPetPorDocumento(objectsList, splittedLine[count]);
+                        if (Objects.nonNull(donoDoPet)) {
+                            metodo.invoke(instance, donoDoPet);
+                            if (count < splittedLine.length - 1) {
+                                count++;
+                            }
+                            break;
+                        }
                         metodo.invoke(instance, splittedLine[count]);
                         if (count < splittedLine.length - 1) {
                             count++;
                         }
                     } else if (metodo.toString().contains("get")) {
                         try {
-                            System.out.println(metodo.invoke(instance));
+                            metodo.invoke(instance);
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             throw new RuntimeException(e);
                         }
@@ -60,6 +62,10 @@ public class Reflection {
                 objectsList.add(instance);
             } catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
+            }
+
+            for (Object object : objectsList) {
+                System.out.println(object);
             }
 
 //            if (splittedLine[1].equals("Pessoa")) {
@@ -111,34 +117,45 @@ public class Reflection {
         }
     }
 
-    public static boolean containsDocument(Object object, String document) {
-        try {
-            Method method=  object.getClass().getDeclaredMethod("getDocumento");
-             return method.invoke(object).equals(document);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-//    public static void containsDocument(final List<Object> list, final String documento){
-//        list.stream().anyMatch(o -> {
-//            try {
-//                Method metodo = o.getClass().getDeclaredMethod("getDocumento");
-//                    metodo.invoke()
-//
-//            } catch (NoSuchMethodException e) {
-//                throw new RuntimeException(e);
-//            }
-//            return false;
-//        });
+//    public static boolean containsDocument(Object object, String document) {
+//        try {
+//            Method method=  object.getClass().getDeclaredMethod("getDocumento");
+//             return method.invoke(object).equals(document);
+//        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+//            throw new RuntimeException(e);
+//        }
 //    }
 
+    public static Object encontraDonoDoPetPorDocumento(final List<Object> list, final String documento) {
+        Object result = null;
+        for (Object o : list) {
+            if (!o.getClass().equals(Pessoa.class)) {
+                return null;
+            } else {
+                Method metodo = null;
+                try {
+                    metodo = o.getClass().getDeclaredMethod("getDocumento");
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
+                try {
+                    if (metodo.invoke(o).equals(documento)) {
+                        result = o;
+                        return result;
+                    }
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return result;
+    }
 
 }
 
 
 //7|Inventario|Toto-Filete-Fefo|3
 //3|Pessoa|222222|Melio|Rua X
-//        4|Pet|22222|Filete
-//        5|Pessoa|33333|Teló|Rua F
-//        6|Pet|33333|Fefo
+//4|Pet|22222|Filete
+//5|Pessoa|33333|Teló|Rua F
+//6|Pet|33333|Fefo
