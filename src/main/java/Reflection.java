@@ -17,6 +17,7 @@ public class Reflection {
 
         List<Object> objectsList = new ArrayList<>();
 
+        Object instance;
         while (input.hasNextLine()) {
             String line = input.nextLine();
             String[] splittedLine = line.split("\\|");
@@ -25,7 +26,6 @@ public class Reflection {
                 Class<?> obj = Class.forName(splittedLine[1]);
                 Method[] metodos = obj.getDeclaredMethods();
 
-                Object instance;
                 try {
                     instance = obj.getConstructor().newInstance();
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
@@ -36,16 +36,13 @@ public class Reflection {
                 int count = 2;
                 for (Method metodo : metodos) {
                     if (metodo.toString().contains("set")) {
-                        if (splittedLine[1].equals("Pet")) {
-                            System.out.println("aqui");
-                        }
                         Object donoDoPet = encontraDonoDoPetPorDocumento(objectsList, splittedLine[count]);
                         if (Objects.nonNull(donoDoPet)) {
                             metodo.invoke(instance, donoDoPet);
                             if (count < splittedLine.length - 1) {
                                 count++;
                             }
-                            break;
+                            continue;
                         }
                         metodo.invoke(instance, splittedLine[count]);
                         if (count < splittedLine.length - 1) {
@@ -59,13 +56,8 @@ public class Reflection {
                         }
                     }
                 }
-                objectsList.add(instance);
             } catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
-            }
-
-            for (Object object : objectsList) {
-                System.out.println(object);
             }
 
 //            if (splittedLine[1].equals("Pessoa")) {
@@ -114,6 +106,10 @@ public class Reflection {
 //                    throw new RuntimeException(e);
 //                }
 //            }
+            objectsList.add(instance);
+        }
+        for (Object object : objectsList) {
+            System.out.println(object);
         }
     }
 
